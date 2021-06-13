@@ -84,12 +84,12 @@ namespace HMI_FragOfficeRemake_MOD
 				{
 					if (Directory.Exists(directoryInfo.FullName + "/HMIBGM3"))
 					{
-                        path = directoryInfo;
+						path = directoryInfo;
 						str = directoryInfo.FullName;
 					}
 				}
-                HMI3_11BGM = mp3toAudioClip(str + "/HMIBGM3/Branch1.mp3");
-                HMI3_21BGM = mp3toAudioClip(str + "/HMIBGM3/Branch2.mp3");
+				HMI3_11BGM = mp3toAudioClip(str + "/HMIBGM3/Branch1.mp3");
+				HMI3_21BGM = mp3toAudioClip(str + "/HMIBGM3/Branch2.mp3");
 			}
 			catch (Exception ex3)
 			{
@@ -355,7 +355,7 @@ namespace HMI_FragOfficeRemake_MOD
 			{
 				try
 				{
-                    Coloring(__instance, new Color(0.3f, 0.3f, 0.3f), new Color(0.4f, 0.4f, 0.4f));
+					Coloring(__instance, new Color(0.3f, 0.3f, 0.3f), new Color(0.4f, 0.4f, 0.4f));
 				}
 				catch (Exception)
 				{
@@ -462,7 +462,7 @@ namespace HMI_FragOfficeRemake_MOD
 			byte[] data = File.ReadAllBytes(path);
 			Texture2D texture2D = new Texture2D(2, 2);
 			texture2D.LoadImage(data);
-            EffectSprites.Add(name, Sprite.Create(texture2D, new Rect(0f, 0f, (float)texture2D.width, (float)texture2D.height), new UnityEngine.Vector2(0.5f, 0.5f), 100f, 0U, SpriteMeshType.FullRect));
+			EffectSprites.Add(name, Sprite.Create(texture2D, new Rect(0f, 0f, (float)texture2D.width, (float)texture2D.height), new UnityEngine.Vector2(0.5f, 0.5f), 100f, 0U, SpriteMeshType.FullRect));
 		}
 
 		public static void textureInit(DirectoryInfo dir)
@@ -472,7 +472,7 @@ namespace HMI_FragOfficeRemake_MOD
 				DirectoryInfo[] directories = dir.GetDirectories();
 				for (int i = 0; i < directories.Length; i++)
 				{
-                    textureInit(directories[i]);
+					textureInit(directories[i]);
 				}
 			}
 			foreach (FileInfo fileInfo in dir.GetFiles())
@@ -482,7 +482,7 @@ namespace HMI_FragOfficeRemake_MOD
 					byte[] data = File.ReadAllBytes(fileInfo.FullName);
 					Texture2D texture2D = new Texture2D(2, 2);
 					texture2D.LoadImage(data);
-                    textures.Add(fileInfo.Name, texture2D);
+					textures.Add(fileInfo.Name, texture2D);
 				}
 			}
 		}
@@ -607,7 +607,7 @@ namespace HMI_FragOfficeRemake_MOD
 			for (int j = 0; j < childCount; j++)
 			{
 				Transform child = obj.transform.GetChild(j);
-                outputTexture(child.gameObject, prepath + j.ToString() + "_");
+				outputTexture(child.gameObject, prepath + j.ToString() + "_");
 			}
 		}
 
@@ -725,7 +725,7 @@ namespace HMI_FragOfficeRemake_MOD
 					}
 				}
 				UIStoryProgressIconSlot uistoryProgressIconSlot3 = UnityEngine.Object.Instantiate(uistoryProgressIconSlot, uistoryProgressIconSlot.transform.parent);
-                SlotCopying(__instance, uistoryProgressIconSlot, uistoryProgressIconSlot3);
+				SlotCopying(__instance, uistoryProgressIconSlot, uistoryProgressIconSlot3);
 				uistoryProgressIconSlot3.transform.localPosition += new UnityEngine.Vector3(-400f, 0f);
 				List<GameObject> list2 = (List<GameObject>)uistoryProgressIconSlot3.GetType().GetField("connectLineList", AccessTools.all).GetValue(uistoryProgressIconSlot3);
 				list2[0].transform.localPosition += new UnityEngine.Vector3(-400f, 0f);
@@ -735,11 +735,11 @@ namespace HMI_FragOfficeRemake_MOD
 				list3.Add(data);
 				list3.Add(data2);
 				uistoryProgressIconSlot3.SetSlotData(list3);
-                Storyslots[list3] = uistoryProgressIconSlot3;
+				Storyslots[list3] = uistoryProgressIconSlot3;
 				UIIconManager.IconSet iconSet = new UIIconManager.IconSet();
 				iconSet.icon = BaseMod.Harmony_Patch.ArtWorks["T"];
 				iconSet.iconGlow = BaseMod.Harmony_Patch.ArtWorks["T"];
-                HMIIcons["T"] = iconSet;
+				HMIIcons["T"] = iconSet;
 			}
 			catch (Exception ex)
 			{
@@ -754,21 +754,21 @@ namespace HMI_FragOfficeRemake_MOD
 			{
 				if (!Init)
 				{
-                    Storyslots = new Dictionary<List<StageClassInfo>, UIStoryProgressIconSlot>();
-                    HMIIcons = new Dictionary<string, UIIconManager.IconSet>();
-                    CreateFragOffice(__instance);
-                    Init = true;
+					Storyslots = new Dictionary<List<StageClassInfo>, UIStoryProgressIconSlot>();
+					HMIIcons = new Dictionary<string, UIIconManager.IconSet>();
+					CreateFragOffice(__instance);
+					Init = true;
 				}
 				foreach (List<StageClassInfo> list in Storyslots.Keys)
 				{
-                    Storyslots[list].SetSlotData(list);
+					Storyslots[list].SetSlotData(list);
 					if (list[0].currentState != StoryState.Close)
 					{
-                        Storyslots[list].SetActiveStory(true);
+						Storyslots[list].SetActiveStory(true);
 					}
 					else
 					{
-                        Storyslots[list].SetActiveStory(false);
+						Storyslots[list].SetActiveStory(false);
 					}
 				}
 			}
@@ -1368,7 +1368,7 @@ namespace HMI_FragOfficeRemake_MOD
 				battleUnitBuf_passivelock.stack = add;
 				model.bufListDetail.AddBuf(battleUnitBuf_passivelock);
 				int index = RandomUtil.Range(0, model.passiveDetail.PassiveList.Count - 1);
-                passiveModel = model.passiveDetail.PassiveList[index];
+				passiveModel = model.passiveDetail.PassiveList[index];
 				return;
 			}
 			if (add <= 0 && battleUnitBuf_passivelock.stack <= -add)
@@ -1630,7 +1630,7 @@ namespace HMI_FragOfficeRemake_MOD
 	{
 		public override void OnSucceedAreaAttack(BattleUnitModel target)
 		{
-            BattleUnitBuf_bleedingforever.AddBuf(target, 1);
+			BattleUnitBuf_bleedingforever.AddBuf(target, 1);
 			base.OnSucceedAreaAttack(target);
 		}
 
@@ -1643,7 +1643,7 @@ namespace HMI_FragOfficeRemake_MOD
 
 			public static int GetStack(BattleUnitModel model)
 			{
-                BattleUnitBuf_bleedingforever battleUnitBuf_bleedingforever = model.bufListDetail.GetActivatedBufList().Find((BattleUnitBuf x) => x is BattleUnitBuf_bleedingforever) as BattleUnitBuf_bleedingforever;
+				BattleUnitBuf_bleedingforever battleUnitBuf_bleedingforever = model.bufListDetail.GetActivatedBufList().Find((BattleUnitBuf x) => x is BattleUnitBuf_bleedingforever) as BattleUnitBuf_bleedingforever;
 				int result;
 				if (battleUnitBuf_bleedingforever == null)
 				{
@@ -1658,7 +1658,7 @@ namespace HMI_FragOfficeRemake_MOD
 
 			public static void AddBuf(BattleUnitModel model, int add)
 			{
-                BattleUnitBuf_bleedingforever battleUnitBuf_bleedingforever = model.bufListDetail.GetActivatedBufList().Find((BattleUnitBuf x) => x is BattleUnitBuf_bleedingforever) as BattleUnitBuf_bleedingforever;
+				BattleUnitBuf_bleedingforever battleUnitBuf_bleedingforever = model.bufListDetail.GetActivatedBufList().Find((BattleUnitBuf x) => x is BattleUnitBuf_bleedingforever) as BattleUnitBuf_bleedingforever;
 				if (battleUnitBuf_bleedingforever == null)
 				{
 					battleUnitBuf_bleedingforever = new BattleUnitBuf_bleedingforever(model);
@@ -1720,7 +1720,7 @@ namespace HMI_FragOfficeRemake_MOD
 		public override void OnSucceedAttack(BattleUnitModel target)
 		{
 			if (BattleUnitBuf_doorOpening.GetStack(owner) % 3 == 2) { owner.cardSlotDetail.RecoverPlayPoint(6); BattleUnitBuf_entropy.AddBuf(target, 3); }
-            BattleUnitBuf_doorOpening.AddBuf(owner, 1);
+			BattleUnitBuf_doorOpening.AddBuf(owner, 1);
 		}
 
 		public class BattleUnitBuf_doorOpening : BattleUnitBuf
@@ -1732,7 +1732,7 @@ namespace HMI_FragOfficeRemake_MOD
 
 			public static int GetStack(BattleUnitModel model)
 			{
-                BattleUnitBuf_doorOpening battleUnitBuf_doorOpening = model.bufListDetail.GetActivatedBufList().Find((BattleUnitBuf x) => x is BattleUnitBuf_doorOpening) as BattleUnitBuf_doorOpening;
+				BattleUnitBuf_doorOpening battleUnitBuf_doorOpening = model.bufListDetail.GetActivatedBufList().Find((BattleUnitBuf x) => x is BattleUnitBuf_doorOpening) as BattleUnitBuf_doorOpening;
 				int result;
 				if (battleUnitBuf_doorOpening == null)
 				{
@@ -1747,7 +1747,7 @@ namespace HMI_FragOfficeRemake_MOD
 
 			public static void AddBuf(BattleUnitModel model, int add)
 			{
-                BattleUnitBuf_doorOpening battleUnitBuf_doorOpening = model.bufListDetail.GetActivatedBufList().Find((BattleUnitBuf x) => x is BattleUnitBuf_doorOpening) as BattleUnitBuf_doorOpening;
+				BattleUnitBuf_doorOpening battleUnitBuf_doorOpening = model.bufListDetail.GetActivatedBufList().Find((BattleUnitBuf x) => x is BattleUnitBuf_doorOpening) as BattleUnitBuf_doorOpening;
 				if (battleUnitBuf_doorOpening == null)
 				{
 					battleUnitBuf_doorOpening = new BattleUnitBuf_doorOpening(model);
@@ -1876,7 +1876,7 @@ namespace HMI_FragOfficeRemake_MOD
 			{
 				BattleUnitBuf_HMIsign.AddBuf(owner, 1);
 			}
-            card.target.TakeDamage(12, DamageType.Attack, null, KeywordBuf.None);
+			card.target.TakeDamage(12, DamageType.Attack, null, KeywordBuf.None);
 		}
 	}
 	public class DiceCardAbility_HMIPoison1002 : DiceCardAbilityBase
@@ -1886,20 +1886,20 @@ namespace HMI_FragOfficeRemake_MOD
 			int num = RandomUtil.Range(1, 100);
 			if (num <= 10)
 			{
-                BattleUnitBuf_HMIPoison1001.AddBuf(target, 1);
+				BattleUnitBuf_HMIPoison1001.AddBuf(target, 1);
 				return;
 			}
 			if (num <= 20)
 			{
-                BattleUnitBuf_HMIPoison1002.AddBuf(target, 1);
+				BattleUnitBuf_HMIPoison1002.AddBuf(target, 1);
 				return;
 			}
 			if (num <= 60)
 			{
-                BattleUnitBuf_HMIPoison1003.AddBuf(target, 1);
+				BattleUnitBuf_HMIPoison1003.AddBuf(target, 1);
 				return;
 			}
-            BattleUnitBuf_HMIPoison1004.AddBuf(target, 1);
+			BattleUnitBuf_HMIPoison1004.AddBuf(target, 1);
 		}
 
 		public class BattleUnitBuf_HMIPoison1001 : BattleUnitBuf
@@ -1911,7 +1911,7 @@ namespace HMI_FragOfficeRemake_MOD
 
 			public static int GetStack(BattleUnitModel model)
 			{
-                BattleUnitBuf_HMIPoison1001 battleUnitBuf_HMIPoison = model.bufListDetail.GetActivatedBufList().Find((BattleUnitBuf x) => x is BattleUnitBuf_HMIPoison1001) as BattleUnitBuf_HMIPoison1001;
+				BattleUnitBuf_HMIPoison1001 battleUnitBuf_HMIPoison = model.bufListDetail.GetActivatedBufList().Find((BattleUnitBuf x) => x is BattleUnitBuf_HMIPoison1001) as BattleUnitBuf_HMIPoison1001;
 				int result;
 				if (battleUnitBuf_HMIPoison == null)
 				{
@@ -1966,7 +1966,7 @@ namespace HMI_FragOfficeRemake_MOD
 
 			public static int GetStack(BattleUnitModel model)
 			{
-                BattleUnitBuf_HMIPoison1002 battleUnitBuf_HMIPoison = model.bufListDetail.GetActivatedBufList().Find((BattleUnitBuf x) => x is BattleUnitBuf_HMIPoison1002) as BattleUnitBuf_HMIPoison1002;
+				BattleUnitBuf_HMIPoison1002 battleUnitBuf_HMIPoison = model.bufListDetail.GetActivatedBufList().Find((BattleUnitBuf x) => x is BattleUnitBuf_HMIPoison1002) as BattleUnitBuf_HMIPoison1002;
 				int result;
 				if (battleUnitBuf_HMIPoison == null)
 				{
@@ -1981,7 +1981,7 @@ namespace HMI_FragOfficeRemake_MOD
 
 			public static void AddBuf(BattleUnitModel model, int add)
 			{
-                BattleUnitBuf_HMIPoison1002 battleUnitBuf_HMIPoison = model.bufListDetail.GetActivatedBufList().Find((BattleUnitBuf x) => x is BattleUnitBuf_HMIPoison1002) as BattleUnitBuf_HMIPoison1002;
+				BattleUnitBuf_HMIPoison1002 battleUnitBuf_HMIPoison = model.bufListDetail.GetActivatedBufList().Find((BattleUnitBuf x) => x is BattleUnitBuf_HMIPoison1002) as BattleUnitBuf_HMIPoison1002;
 				if (battleUnitBuf_HMIPoison == null)
 				{
 					battleUnitBuf_HMIPoison = new BattleUnitBuf_HMIPoison1002(model);
@@ -2024,7 +2024,7 @@ namespace HMI_FragOfficeRemake_MOD
 
 			public static int GetStack(BattleUnitModel model)
 			{
-                BattleUnitBuf_HMIPoison1003 battleUnitBuf_HMIPoison = model.bufListDetail.GetActivatedBufList().Find((BattleUnitBuf x) => x is BattleUnitBuf_HMIPoison1003) as BattleUnitBuf_HMIPoison1003;
+				BattleUnitBuf_HMIPoison1003 battleUnitBuf_HMIPoison = model.bufListDetail.GetActivatedBufList().Find((BattleUnitBuf x) => x is BattleUnitBuf_HMIPoison1003) as BattleUnitBuf_HMIPoison1003;
 				int result;
 				if (battleUnitBuf_HMIPoison == null)
 				{
@@ -2039,7 +2039,7 @@ namespace HMI_FragOfficeRemake_MOD
 
 			public static void AddBuf(BattleUnitModel model, int add)
 			{
-                BattleUnitBuf_HMIPoison1003 battleUnitBuf_HMIPoison = model.bufListDetail.GetActivatedBufList().Find((BattleUnitBuf x) => x is BattleUnitBuf_HMIPoison1003) as BattleUnitBuf_HMIPoison1003;
+				BattleUnitBuf_HMIPoison1003 battleUnitBuf_HMIPoison = model.bufListDetail.GetActivatedBufList().Find((BattleUnitBuf x) => x is BattleUnitBuf_HMIPoison1003) as BattleUnitBuf_HMIPoison1003;
 				if (battleUnitBuf_HMIPoison == null)
 				{
 					battleUnitBuf_HMIPoison = new BattleUnitBuf_HMIPoison1003(model);
@@ -2084,7 +2084,7 @@ namespace HMI_FragOfficeRemake_MOD
 
 			public static int GetStack(BattleUnitModel model)
 			{
-                BattleUnitBuf_HMIPoison1004 battleUnitBuf_HMIPoison = model.bufListDetail.GetActivatedBufList().Find((BattleUnitBuf x) => x is BattleUnitBuf_HMIPoison1004) as BattleUnitBuf_HMIPoison1004;
+				BattleUnitBuf_HMIPoison1004 battleUnitBuf_HMIPoison = model.bufListDetail.GetActivatedBufList().Find((BattleUnitBuf x) => x is BattleUnitBuf_HMIPoison1004) as BattleUnitBuf_HMIPoison1004;
 				int result;
 				if (battleUnitBuf_HMIPoison == null)
 				{
@@ -2099,7 +2099,7 @@ namespace HMI_FragOfficeRemake_MOD
 
 			public static void AddBuf(BattleUnitModel model, int add)
 			{
-                BattleUnitBuf_HMIPoison1004 battleUnitBuf_HMIPoison = model.bufListDetail.GetActivatedBufList().Find((BattleUnitBuf x) => x is BattleUnitBuf_HMIPoison1004) as BattleUnitBuf_HMIPoison1004;
+				BattleUnitBuf_HMIPoison1004 battleUnitBuf_HMIPoison = model.bufListDetail.GetActivatedBufList().Find((BattleUnitBuf x) => x is BattleUnitBuf_HMIPoison1004) as BattleUnitBuf_HMIPoison1004;
 				if (battleUnitBuf_HMIPoison == null)
 				{
 					battleUnitBuf_HMIPoison = new BattleUnitBuf_HMIPoison1004(model);
@@ -2134,20 +2134,20 @@ namespace HMI_FragOfficeRemake_MOD
 			int num = RandomUtil.Range(1, 100);
 			if (num <= 10)
 			{
-                BattleUnitBuf_HMIPoison2001.AddBuf(target, 1);
+				BattleUnitBuf_HMIPoison2001.AddBuf(target, 1);
 				return;
 			}
 			if (num <= 20)
 			{
-                BattleUnitBuf_HMIPoison2002.AddBuf(target, 1);
+				BattleUnitBuf_HMIPoison2002.AddBuf(target, 1);
 				return;
 			}
 			if (num <= 60)
 			{
-                BattleUnitBuf_HMIPoison2003.AddBuf(target, 1);
+				BattleUnitBuf_HMIPoison2003.AddBuf(target, 1);
 				return;
 			}
-            BattleUnitBuf_HMIPoison2004.AddBuf(target, 1);
+			BattleUnitBuf_HMIPoison2004.AddBuf(target, 1);
 		}
 
 		public class BattleUnitBuf_HMIPoison2001 : BattleUnitBuf
@@ -2159,7 +2159,7 @@ namespace HMI_FragOfficeRemake_MOD
 
 			public static int GetStack(BattleUnitModel model)
 			{
-                BattleUnitBuf_HMIPoison2001 battleUnitBuf_HMIPoison = model.bufListDetail.GetActivatedBufList().Find((BattleUnitBuf x) => x is BattleUnitBuf_HMIPoison2001) as BattleUnitBuf_HMIPoison2001;
+				BattleUnitBuf_HMIPoison2001 battleUnitBuf_HMIPoison = model.bufListDetail.GetActivatedBufList().Find((BattleUnitBuf x) => x is BattleUnitBuf_HMIPoison2001) as BattleUnitBuf_HMIPoison2001;
 				int result;
 				if (battleUnitBuf_HMIPoison == null)
 				{
@@ -2174,7 +2174,7 @@ namespace HMI_FragOfficeRemake_MOD
 
 			public static void AddBuf(BattleUnitModel model, int add)
 			{
-                BattleUnitBuf_HMIPoison2001 battleUnitBuf_HMIPoison = model.bufListDetail.GetActivatedBufList().Find((BattleUnitBuf x) => x is BattleUnitBuf_HMIPoison2001) as BattleUnitBuf_HMIPoison2001;
+				BattleUnitBuf_HMIPoison2001 battleUnitBuf_HMIPoison = model.bufListDetail.GetActivatedBufList().Find((BattleUnitBuf x) => x is BattleUnitBuf_HMIPoison2001) as BattleUnitBuf_HMIPoison2001;
 				if (battleUnitBuf_HMIPoison == null)
 				{
 					battleUnitBuf_HMIPoison = new BattleUnitBuf_HMIPoison2001(model);
@@ -2212,7 +2212,7 @@ namespace HMI_FragOfficeRemake_MOD
 
 			public static int GetStack(BattleUnitModel model)
 			{
-                BattleUnitBuf_HMIPoison2002 battleUnitBuf_HMIPoison = model.bufListDetail.GetActivatedBufList().Find((BattleUnitBuf x) => x is BattleUnitBuf_HMIPoison2002) as BattleUnitBuf_HMIPoison2002;
+				BattleUnitBuf_HMIPoison2002 battleUnitBuf_HMIPoison = model.bufListDetail.GetActivatedBufList().Find((BattleUnitBuf x) => x is BattleUnitBuf_HMIPoison2002) as BattleUnitBuf_HMIPoison2002;
 				int result;
 				if (battleUnitBuf_HMIPoison == null)
 				{
@@ -2227,7 +2227,7 @@ namespace HMI_FragOfficeRemake_MOD
 
 			public static void AddBuf(BattleUnitModel model, int add)
 			{
-                BattleUnitBuf_HMIPoison2002 battleUnitBuf_HMIPoison = model.bufListDetail.GetActivatedBufList().Find((BattleUnitBuf x) => x is BattleUnitBuf_HMIPoison2002) as BattleUnitBuf_HMIPoison2002;
+				BattleUnitBuf_HMIPoison2002 battleUnitBuf_HMIPoison = model.bufListDetail.GetActivatedBufList().Find((BattleUnitBuf x) => x is BattleUnitBuf_HMIPoison2002) as BattleUnitBuf_HMIPoison2002;
 				if (battleUnitBuf_HMIPoison == null)
 				{
 					battleUnitBuf_HMIPoison = new BattleUnitBuf_HMIPoison2002(model);
@@ -2271,7 +2271,7 @@ namespace HMI_FragOfficeRemake_MOD
 
 			public static int GetStack(BattleUnitModel model)
 			{
-                BattleUnitBuf_HMIPoison2003 battleUnitBuf_HMIPoison = model.bufListDetail.GetActivatedBufList().Find((BattleUnitBuf x) => x is BattleUnitBuf_HMIPoison2003) as BattleUnitBuf_HMIPoison2003;
+				BattleUnitBuf_HMIPoison2003 battleUnitBuf_HMIPoison = model.bufListDetail.GetActivatedBufList().Find((BattleUnitBuf x) => x is BattleUnitBuf_HMIPoison2003) as BattleUnitBuf_HMIPoison2003;
 				int result;
 				if (battleUnitBuf_HMIPoison == null)
 				{
@@ -2286,7 +2286,7 @@ namespace HMI_FragOfficeRemake_MOD
 
 			public static void AddBuf(BattleUnitModel model, int add)
 			{
-                BattleUnitBuf_HMIPoison2003 battleUnitBuf_HMIPoison = model.bufListDetail.GetActivatedBufList().Find((BattleUnitBuf x) => x is BattleUnitBuf_HMIPoison2003) as BattleUnitBuf_HMIPoison2003;
+				BattleUnitBuf_HMIPoison2003 battleUnitBuf_HMIPoison = model.bufListDetail.GetActivatedBufList().Find((BattleUnitBuf x) => x is BattleUnitBuf_HMIPoison2003) as BattleUnitBuf_HMIPoison2003;
 				if (battleUnitBuf_HMIPoison == null)
 				{
 					battleUnitBuf_HMIPoison = new BattleUnitBuf_HMIPoison2003(model);
@@ -2385,7 +2385,7 @@ namespace HMI_FragOfficeRemake_MOD
 	{
 		public override void OnSucceedAttack(BattleUnitModel target)
 		{
-            owner.emotionDetail.CreateEmotionCoin(EmotionCoinType.Negative, 3);
+			owner.emotionDetail.CreateEmotionCoin(EmotionCoinType.Negative, 3);
 			SingletonBehavior<BattleManagerUI>.Instance.ui_battleEmotionCoinUI.OnAcquireCoin(owner, EmotionCoinType.Negative, 3);
 		}
 	}
@@ -2402,7 +2402,7 @@ namespace HMI_FragOfficeRemake_MOD
 		{
 			if (!owner.allyCardDetail.IsHighlander())
 			{
-                owner.allyCardDetail.DrawCards(3);
+				owner.allyCardDetail.DrawCards(3);
 			}
 		}
 	}
@@ -2410,7 +2410,7 @@ namespace HMI_FragOfficeRemake_MOD
 	{
 		public override void OnLoseParrying()
 		{
-            card.ApplyDiceStatBonus(DiceMatch.LastDice, new DiceStatBonus
+			card.ApplyDiceStatBonus(DiceMatch.LastDice, new DiceStatBonus
 			{
 				power = 6
 			});
@@ -2478,8 +2478,8 @@ namespace HMI_FragOfficeRemake_MOD
 				SystemUtil.LockWorkStation();
 				return;
 			}
-            owner.TakeBreakDamage(20, DamageType.Attack, null, AtkResist.Normal, KeywordBuf.None);
-            owner.bufListDetail.AddKeywordBufByCard(new BattleUnitBuf_weak().bufType, 4, null);
+			owner.TakeBreakDamage(20, DamageType.Attack, null, AtkResist.Normal, KeywordBuf.None);
+			owner.bufListDetail.AddKeywordBufByCard(new BattleUnitBuf_weak().bufType, 4, null);
 		}
 	}
 	public class DiceCardAbility_ZZYSuper : DiceCardAbilityBase
@@ -2494,7 +2494,7 @@ namespace HMI_FragOfficeRemake_MOD
 				{
 					power = -cnt + 1
 				});
-                card.AddDice(behavior);
+				card.AddDice(behavior);
 			}
 			else
 			{
@@ -2505,7 +2505,7 @@ namespace HMI_FragOfficeRemake_MOD
 					battleUnitModel.TakeBreakDamage(3, DamageType.Attack, null, AtkResist.Normal, KeywordBuf.None);
 				}
 			}
-            owner.RecoverHP(card.target.bufListDetail.GetActivatedBuf(KeywordBuf.Bleeding).stack << 1);
+			owner.RecoverHP(card.target.bufListDetail.GetActivatedBuf(KeywordBuf.Bleeding).stack << 1);
 		}
 
 		private int cnt;
@@ -2514,7 +2514,7 @@ namespace HMI_FragOfficeRemake_MOD
 	{
 		public override void OnUseCard()
 		{
-            owner.bufListDetail.AddBuf(new BattleUnitBuf_allDiceMaxUp(4));
+			owner.bufListDetail.AddBuf(new BattleUnitBuf_allDiceMaxUp(4));
 		}
 	}
 	public class DiceCardSelfAbility_fragnolimit : DiceCardSelfAbilityBase
@@ -2595,21 +2595,21 @@ namespace HMI_FragOfficeRemake_MOD
 	{
 		public override void OnUseCard()
 		{
-            owner.allyCardDetail.ExhaustCard(card.card.GetID());
+			owner.allyCardDetail.ExhaustCard(card.card.GetID());
 		}
 	}
 	public class DiceCardSelfAbility_HMIPoison2001 : DiceCardSelfAbilityBase
 	{
 		public override void OnUseCard()
 		{
-            owner.allyCardDetail.ExhaustCard(card.card.GetID());
-            owner.TakeDamage(31, DamageType.Attack, null, KeywordBuf.None);
-            owner.TakeBreakDamage(31, DamageType.Attack, null, AtkResist.Normal, KeywordBuf.None);
-            owner.bufListDetail.AddKeywordBufByCard(new BattleUnitBuf_weak().bufType, 10, null);
-            owner.bufListDetail.AddKeywordBufByCard(new BattleUnitBuf_binding().bufType, 10, null);
-            owner.bufListDetail.AddKeywordBufByCard(new BattleUnitBuf_disarm().bufType, 10, null);
-            owner.bufListDetail.AddKeywordBufByCard(new BattleUnitBuf_bleeding().bufType, 4, null);
-            BattleUnitBuf_HMISelfPoison.AddBuf(owner, RandomUtil.Range(2, 3));
+			owner.allyCardDetail.ExhaustCard(card.card.GetID());
+			owner.TakeDamage(31, DamageType.Attack, null, KeywordBuf.None);
+			owner.TakeBreakDamage(31, DamageType.Attack, null, AtkResist.Normal, KeywordBuf.None);
+			owner.bufListDetail.AddKeywordBufByCard(new BattleUnitBuf_weak().bufType, 10, null);
+			owner.bufListDetail.AddKeywordBufByCard(new BattleUnitBuf_binding().bufType, 10, null);
+			owner.bufListDetail.AddKeywordBufByCard(new BattleUnitBuf_disarm().bufType, 10, null);
+			owner.bufListDetail.AddKeywordBufByCard(new BattleUnitBuf_bleeding().bufType, 4, null);
+			BattleUnitBuf_HMISelfPoison.AddBuf(owner, RandomUtil.Range(2, 3));
 		}
 
 		public class BattleUnitBuf_HMISelfPoison : BattleUnitBuf
@@ -2625,7 +2625,7 @@ namespace HMI_FragOfficeRemake_MOD
 
 			public static void AddBuf(BattleUnitModel model, int add)
 			{
-                BattleUnitBuf_HMISelfPoison battleUnitBuf_HMISelfPoison = model.bufListDetail.GetActivatedBufList().Find((BattleUnitBuf x) => x is BattleUnitBuf_HMISelfPoison) as BattleUnitBuf_HMISelfPoison;
+				BattleUnitBuf_HMISelfPoison battleUnitBuf_HMISelfPoison = model.bufListDetail.GetActivatedBufList().Find((BattleUnitBuf x) => x is BattleUnitBuf_HMISelfPoison) as BattleUnitBuf_HMISelfPoison;
 				if (battleUnitBuf_HMISelfPoison == null)
 				{
 					battleUnitBuf_HMISelfPoison = new BattleUnitBuf_HMISelfPoison(model);
@@ -2698,8 +2698,8 @@ namespace HMI_FragOfficeRemake_MOD
 	{
 		public override void OnUseCard()
 		{
-            owner.bufListDetail.AddBuf(new BattleUnitBuf_GotLight());
-            owner.allyCardDetail.ExhaustCard(card.card.GetID());
+			owner.bufListDetail.AddBuf(new BattleUnitBuf_GotLight());
+			owner.allyCardDetail.ExhaustCard(card.card.GetID());
 			BattleUnitBuf_entropy.AddBuf(card.target, 3);
 		}
 
@@ -2720,7 +2720,7 @@ namespace HMI_FragOfficeRemake_MOD
 	{
 		public override void OnStartBattle()
 		{
-            owner.TakeDamage(10, DamageType.Attack, null, KeywordBuf.None);
+			owner.TakeDamage(10, DamageType.Attack, null, KeywordBuf.None);
 			foreach (BattleUnitBuf battleUnitBuf in owner.bufListDetail.GetActivatedBufList())
 			{
 				if (battleUnitBuf.positiveType == BufPositiveType.Negative)
@@ -2728,7 +2728,7 @@ namespace HMI_FragOfficeRemake_MOD
 					battleUnitBuf.Destroy();
 				}
 			}
-            owner.bufListDetail.AddBuf(new PowerUp2thisRoundBuf());
+			owner.bufListDetail.AddBuf(new PowerUp2thisRoundBuf());
 		}
 
 		protected class PowerUp2thisRoundBuf : BattleUnitBuf
@@ -2751,12 +2751,12 @@ namespace HMI_FragOfficeRemake_MOD
 	{
 		public override void OnUseCard()
 		{
-            owner.bufListDetail.AddKeywordBufThisRoundByCard(new BattleUnitBuf_strength().bufType, 3, null);
+			owner.bufListDetail.AddKeywordBufThisRoundByCard(new BattleUnitBuf_strength().bufType, 3, null);
 			card.target.bufListDetail.AddKeywordBufThisRoundByCard(new BattleUnitBuf_weak().bufType, 3, null);
 			if (!card.card.exhaust)
 			{
 				card.card.exhaust = true;
-                owner.allyCardDetail.AddNewCardToDeck(card.card.GetID(), false).exhaust = true;
+				owner.allyCardDetail.AddNewCardToDeck(card.card.GetID(), false).exhaust = true;
 			}
 			base.OnUseCard();
 		}
@@ -2992,7 +2992,7 @@ namespace HMI_FragOfficeRemake_MOD
 			owner.allyCardDetail.DrawCards(5);
 			if (!PassiveList.Contains(this))
 			{
-                PassiveList.Add(this);
+				PassiveList.Add(this);
 			}
 			try
 			{
@@ -3820,7 +3820,7 @@ namespace HMI_FragOfficeRemake_MOD
 
 		public override void EnableMap(bool b)
 		{
-            gameObject.SetActive(b);
+			gameObject.SetActive(b);
 		}
 
 		//public override GameObject GetScratch(int lv, Transform parent)
@@ -3911,13 +3911,11 @@ namespace HMI_FragOfficeRemake_MOD
 		{
 			_bMapInitialized = true;
 			_dlgIdList = new List<string>();
-			_dlgIdList.Add("颜色只存在于有光的地方");
-			_dlgIdList.Add("IN GI RUM IMUS NOC TE ET CON SUMI MUR IGNI RUM IMUS NOC TE ET CON SUMI MUR");
-			_dlgIdList.Add("变化、混沌、秘密、自然");
-			_dlgIdList.Add("日出为血");
-			_dlgIdList.Add("每个颜色都更加明亮，然而现在它们全都开始流失色泽，褪至纯白");
-			_dlgIdList.Add("何等的奇观");
-			_dlgIdList.Add("起初是梦境，然后是幻象，而今是一切");
+			_dlgIdList.Add("诗人有意无限地，长久地搅乱自身的所有感官，获得预见世事的能力……");
+            _dlgIdList.Add("裂光芒之肤，横流其血");
+			_dlgIdList.Add("我们铭记死者，直至将其遗忘");
+			_dlgIdList.Add("一个孤立系统的总混乱度不会减小");
+			_dlgIdList.Add("E=mc^2");
 			CreateDialog();
 		}
 
@@ -3928,13 +3926,13 @@ namespace HMI_FragOfficeRemake_MOD
 
 		public override void EnableMap(bool b)
 		{
-            gameObject.SetActive(b);
+			gameObject.SetActive(b);
 		}
 
-		//public override GameObject GetScratch(int lv, Transform parent)
-		//{
-		//	return null;
-		//}
+		public override GameObject GetScratch(int lv, Transform parent)
+		{
+			return null;
+		}
 
 		public override GameObject GetWallCrater()
 		{
@@ -4019,7 +4017,13 @@ namespace HMI_FragOfficeRemake_MOD
 		{
 			_bMapInitialized = true;
 			_dlgIdList = new List<string>();
-			_dlgIdList.Add("诗人有意无限地，长久地搅乱自身的所有感官，获得预见世事的能力……");
+			_dlgIdList.Add("颜色只存在于有光的地方");
+			_dlgIdList.Add("IN GI RUM IMUS NOC TE ET CON SUMI MUR IGNI RUM IMUS NOC TE ET CON SUMI MUR");
+			_dlgIdList.Add("变化、混沌、秘密、自然");
+			_dlgIdList.Add("日出为血");
+			_dlgIdList.Add("每个颜色都更加明亮，然而现在它们全都开始流失色泽，褪至纯白");
+			_dlgIdList.Add("何等的奇观");
+			_dlgIdList.Add("起初是梦境，然后是幻象，而今是一切");
 			CreateDialog();
 		}
 
@@ -4032,10 +4036,11 @@ namespace HMI_FragOfficeRemake_MOD
 		{
 			gameObject.SetActive(b);
 		}
-		//public override GameObject GetScratch(int lv, Transform parent)
-		//{
-		//	return null;
-		//}
+
+		public override GameObject GetScratch(int lv, Transform parent)
+		{
+			return null;
+		}
 
 		public override GameObject GetWallCrater()
 		{

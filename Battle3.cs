@@ -1348,12 +1348,12 @@ namespace HMI_FragOfficeRemake_MOD
 		{
 			if (behavior.card.card.GetID() == 3500106 && BattleUnitBuf_HMIcaught.GetStack(behavior.TargetDice.owner) <= 0) ++_cnt;
 		}
-        public override void OnSucceedAreaAttack(BattleDiceBehavior behavior, BattleUnitModel target)
-        {
+		public override void OnSucceedAreaAttack(BattleDiceBehavior behavior, BattleUnitModel target)
+		{
 			if (behavior.card.card.GetID() == 3500112) ++_forestcnt;
 			if (_forestcnt >= 15) { BattleUnitBuf_HMIforest2.Akari(owner, -1); BattleUnitBuf_HMIforest3.Akari(owner, 1); BattleUnitBuf_HMIreason.Akari(owner, 33); BattleUnitBuf_HMIselfDestr0y.Akari(owner, 333); }
-        }
-        int _pattern, _phase, _cnt, _forestcnt;
+		}
+		int _pattern, _phase, _cnt, _forestcnt;
 		int _state
 		{
 			get
