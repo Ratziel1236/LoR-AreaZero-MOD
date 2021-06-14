@@ -1284,17 +1284,6 @@ namespace HMI_FragOfficeRemake_MOD
 		public override void OnRoundStart()
 		{
 			++_pattern; if (_pattern == 1) WaveStart();
-			try
-			{
-				int emotionTotalCoinNumber = Singleton<StageController>.Instance.GetCurrentStageFloorModel().team.emotionTotalCoinNumber;
-				Singleton<StageController>.Instance.GetCurrentWaveModel().team.emotionTotalBonus = emotionTotalCoinNumber + 1;
-				Singleton<StageController>.Instance.GetStageModel().SetCurrentMapInfo(Math.Min(2, _phase));
-				BattleObjectManager.instance.GetAliveList(owner.faction);
-			}
-			catch (Exception ex)
-			{
-				File.WriteAllText(Application.dataPath + "/BaseMods/ProjectMoonCodererror.txt", ex.Message + Environment.NewLine + ex.StackTrace);
-			}
 			if (_phase == 3)
 			{
 				if (File.Exists(Application.dataPath + "/BaseMods/comingsoooon.txt")) owner.allyCardDetail.AddNewCard(3500996).SetPriorityAdder(998244353);
@@ -1325,7 +1314,7 @@ namespace HMI_FragOfficeRemake_MOD
 					{
 						if (buf.GetType().Name.Contains("HMI") && (buf.GetType().Name.Contains("tower") || buf.GetType().Name.Contains("wall") || buf.GetType().Name.Contains("forest"))) buf.Destroy();
 					}
-					owner.allyCardDetail.ExhaustAllCards();
+					owner.allyCardDetail.ExhaustAllCards(); _cnt = 0;
 					if (_phase == 3) owner.allyCardDetail.AddNewCard(3500996).SetPriorityAdder(998244353);
 					else
 					{
@@ -1335,13 +1324,24 @@ namespace HMI_FragOfficeRemake_MOD
 					_phase = 2;
 				}
 			}
+			try
+			{
+				int emotionTotalCoinNumber = Singleton<StageController>.Instance.GetCurrentStageFloorModel().team.emotionTotalCoinNumber;
+				Singleton<StageController>.Instance.GetCurrentWaveModel().team.emotionTotalBonus = emotionTotalCoinNumber + 1;
+				Singleton<StageController>.Instance.GetStageModel().SetCurrentMapInfo(Math.Min(2, _phase));
+				BattleObjectManager.instance.GetAliveList(owner.faction);
+			}
+			catch (Exception ex)
+			{
+				File.WriteAllText(Application.dataPath + "/BaseMods/ProjectMoonCodererror.txt", ex.Message + Environment.NewLine + ex.StackTrace);
+			}
 		}
 		public override void BeforeRollDice(BattleDiceBehavior behavior)
 		{
 			if (_inLight)
 			{
 				behavior.ApplyDiceStatBonus(new DiceStatBonus { min = behavior.GetDiceVanillaMin() >> 1, max = behavior.GetDiceVanillaMax() >> 1 });
-				BattleUnitBuf_HMIselfDestr0y.Akari(owner, 11);
+				BattleUnitBuf_HMIselfDestr0y.Akari(owner, 4);
 			}
 		}
 		public override void OnSucceedAttack(BattleDiceBehavior behavior)
@@ -1351,7 +1351,7 @@ namespace HMI_FragOfficeRemake_MOD
 		public override void OnSucceedAreaAttack(BattleDiceBehavior behavior, BattleUnitModel target)
 		{
 			if (behavior.card.card.GetID() == 3500112) ++_forestcnt;
-			if (_forestcnt >= 15) { BattleUnitBuf_HMIforest2.Akari(owner, -1); BattleUnitBuf_HMIforest3.Akari(owner, 1); BattleUnitBuf_HMIreason.Akari(owner, 33); BattleUnitBuf_HMIselfDestr0y.Akari(owner, 333); }
+			if (_forestcnt >= 15) { BattleUnitBuf_HMIforest2.Akari(owner, -1); BattleUnitBuf_HMIforest3.Akari(owner, 1); BattleUnitBuf_HMIreason.Akari(owner, 33); BattleUnitBuf_HMIselfDestr0y.Akari(owner, 333); owner.allyCardDetail.ExhaustCard(3500112); }
 		}
 		int _pattern, _phase, _cnt, _forestcnt;
 		int _state
@@ -1506,5 +1506,14 @@ namespace HMI_FragOfficeRemake_MOD
 			card.card.exhaust = true;
 			foreach (BattleUnitModel model in BattleObjectManager.instance.GetAliveList(Faction.Player)) BattleUnitBuf_HMIcaught.Destroy(model);
 		}
+	}
+	public class DiceCardAbility_HMIbattle3cheat : DiceCardAbilityBase
+	{
+	  public override void OnRollDice()
+	  {
+			BattleUnitBuf_HMItower1.Akari(card.target, 3 - BattleUnitBuf_HMItower1.GetStack(card.target));
+			BattleUnitBuf_HMIwall1.Akari(card.target, 3 - BattleUnitBuf_HMIwall1.GetStack(card.target));
+			BattleUnitBuf_HMIforest1.Akari(card.target, 7 - BattleUnitBuf_HMIforest1.GetStack(card.target));
+	  }
 	}
 }
