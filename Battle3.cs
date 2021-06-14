@@ -1350,8 +1350,11 @@ namespace HMI_FragOfficeRemake_MOD
 		}
 		public override void OnSucceedAreaAttack(BattleDiceBehavior behavior, BattleUnitModel target)
 		{
-			if (behavior.card.card.GetID() == 3500112) ++_forestcnt;
-			if (_forestcnt >= 15) { BattleUnitBuf_HMIforest2.Akari(owner, -1); BattleUnitBuf_HMIforest3.Akari(owner, 1); BattleUnitBuf_HMIreason.Akari(owner, 33); BattleUnitBuf_HMIselfDestr0y.Akari(owner, 333); owner.allyCardDetail.ExhaustCard(3500112); }
+			if (behavior.card.card.GetID() == 3500112)
+			{
+				++_forestcnt;
+				if (_forestcnt >= 15) { BattleUnitBuf_HMIforest2.Akari(owner, -1); BattleUnitBuf_HMIforest3.Akari(owner, 1); BattleUnitBuf_HMIreason.Akari(owner, 33); BattleUnitBuf_HMIselfDestr0y.Akari(owner, 333); owner.allyCardDetail.ExhaustCard(3500112); _forestcnt = -999999999; }
+			}
 		}
 		int _pattern, _phase, _cnt, _forestcnt;
 		int _state
@@ -1509,11 +1512,11 @@ namespace HMI_FragOfficeRemake_MOD
 	}
 	public class DiceCardAbility_HMIbattle3cheat : DiceCardAbilityBase
 	{
-	  public override void OnRollDice()
-	  {
+		public override void OnRollDice()
+		{
 			BattleUnitBuf_HMItower1.Akari(card.target, 3 - BattleUnitBuf_HMItower1.GetStack(card.target));
 			BattleUnitBuf_HMIwall1.Akari(card.target, 3 - BattleUnitBuf_HMIwall1.GetStack(card.target));
 			BattleUnitBuf_HMIforest1.Akari(card.target, 7 - BattleUnitBuf_HMIforest1.GetStack(card.target));
-	  }
+		}
 	}
 }
