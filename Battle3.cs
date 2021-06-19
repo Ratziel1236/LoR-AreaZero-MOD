@@ -1341,7 +1341,7 @@ namespace HMI_FragOfficeRemake_MOD
 			if (_inLight)
 			{
 				behavior.ApplyDiceStatBonus(new DiceStatBonus { min = behavior.GetDiceVanillaMin() >> 1, max = behavior.GetDiceVanillaMax() >> 1 });
-				BattleUnitBuf_HMIselfDestr0y.Akari(owner, 4);
+				BattleUnitBuf_HMIselfDestr0y.Akari(owner, 11);
 			}
 		}
 		public override void OnSucceedAttack(BattleDiceBehavior behavior)
@@ -1477,8 +1477,8 @@ namespace HMI_FragOfficeRemake_MOD
 	{
 		public BattleUnitBuf_HMIforeverLight(BattleUnitModel model)
 		{
-			this._owner = model;
-			this.stack = 0;
+			_owner = model;
+			stack = 0;
 		}
 		public static int GetStack(BattleUnitModel model)
 		{
@@ -1497,7 +1497,7 @@ namespace HMI_FragOfficeRemake_MOD
 			}
 			buf.Edd(add);
 		}
-		public void Edd(int add) { this.stack += add; }
+		public void Edd(int add) { stack += add; }
 		public override void OnRoundStart() { BattleUnitBuf_HMIreasonLight.GetStack(_owner); }
 	}
 	public class DiceCardSelfAbility_HMIrelease1 : DiceCardSelfAbilityBase
@@ -1517,6 +1517,123 @@ namespace HMI_FragOfficeRemake_MOD
 			BattleUnitBuf_HMItower1.Akari(card.target, 3 - BattleUnitBuf_HMItower1.GetStack(card.target));
 			BattleUnitBuf_HMIwall1.Akari(card.target, 3 - BattleUnitBuf_HMIwall1.GetStack(card.target));
 			BattleUnitBuf_HMIforest1.Akari(card.target, 7 - BattleUnitBuf_HMIforest1.GetStack(card.target));
+		}
+	}
+	public class BattleUnitBuf_HMIdsu : BattleUnitBuf
+	{
+		public BattleUnitBuf_HMIdsu(BattleUnitModel model)
+		{
+			_owner = model;
+			stack = 0;
+			fa = new List<int> { 0, 1, 2, 3, 4, 5 };
+			siz = new List<int> { 1, 1, 1, 1, 1, 1 };
+			opr = new Stack<KeyValuePair<int, int>>();
+		}
+		public static int GetStack(BattleUnitModel model)
+		{
+			int result;
+			if (!(model.bufListDetail.GetActivatedBufList().Find((BattleUnitBuf x) => x is BattleUnitBuf_HMIdsu) is BattleUnitBuf_HMIdsu buf)) result = 0;
+			else result = buf.stack;
+			return result;
+		}
+		public static BattleUnitBuf_HMIdsu GetBuf(BattleUnitModel model)
+		{
+			BattleUnitBuf_HMIdsu result;
+			if (!(model.bufListDetail.GetActivatedBufList().Find((BattleUnitBuf x) => x is BattleUnitBuf_HMIdsu) is BattleUnitBuf_HMIdsu buf)) result = null;
+			else result = buf;
+			return result;
+		}
+		public static void Akari(BattleUnitModel model, int add)
+		{
+			if (!(model.bufListDetail.GetActivatedBufList().Find((BattleUnitBuf x) => x is BattleUnitBuf_HMIdsu) is BattleUnitBuf_HMIdsu buf))
+			{
+				buf = new BattleUnitBuf_HMIdsu(model) { stack = add };
+				model.bufListDetail.AddBuf(buf);
+				return;
+			}
+			buf.Edd(add);
+		}
+		public void Edd(int add) { stack += add; }
+		private List<int> fa, siz;
+		private Stack<KeyValuePair<int, int>> opr;
+		public int getfa(int x)
+		{
+			if (fa == null) fa = new List<int> { 0, 1, 2, 3, 4, 5 };
+			if (x > 100000) return x;
+			while (x >= fa.Count) fa.Add(fa.Count);
+			while (x != fa[x]) x = fa[x];
+			return x;
+		}
+		public void merge(int x,int y)
+		{
+			if (siz == null) siz = new List<int> { 1, 1, 1, 1, 1, 1 };
+			if (Math.Max(x, y) > 100000) return;
+			while (Math.Max(x, y) >= siz.Count) siz.Add(1);
+			x = getfa(x); y = getfa(y);
+			if (x == y) return;
+			if (siz[x] < siz[y]) x ^= y ^= x ^= y;
+			fa[y] = x; siz[x] += siz[y]; opr.Push(new KeyValuePair<int, int>(x, y));
+		}
+		public void cancel()
+		{
+			if (opr == null) opr = new Stack<KeyValuePair<int, int>>();
+			if (opr.Count == 0) return;
+			KeyValuePair<int, int> pair = opr.Pop();
+			siz[pair.Key] -= siz[pair.Value]; fa[pair.Value] = pair.Value;
+		}
+		public override void OnSuccessAttack(BattleDiceBehavior behavior)
+		{
+			BattleUnitModel target = behavior.card.target;
+			if (target != null)
+			{
+				List<int> victims = new List<int>();
+				for (int i = 0; i < fa.Count; ++i) if (i != target.index && getfa(i) == getfa(target.index)) victims.Add(i);
+				string s = victims.Count.ToString() + Environment.NewLine;
+				if (victims.Count > 0)
+				{
+					foreach (int v in victims)
+					{
+						BattleUnitModel model = BattleObjectManager.instance.GetAliveList_opponent(_owner.faction)[v];
+						model.TakeDamage(behavior.DiceResultValue);
+						model.TakeBreakDamage(behavior.DiceResultValue);
+						s = s + v.ToString() + " ";
+					}
+					s += Environment.NewLine + fa.Count.ToString();
+					for (int i = 0; i < fa.Count; ++i) s += getfa(i).ToString() + " ";
+					File.WriteAllText(Application.dataPath + "/BaseMods/HMIdebug.txt", s);
+				}
+			}
+		}
+	}
+	public class DiceCardSelfAbility_HMIstring : DiceCardSelfAbilityBase
+	{
+		int cnt = 0;
+		[SerializeField]
+		bool good = true;
+		static BattleUnitModel model;
+		public override void OnUseCard()
+		{
+			cnt = 0;
+			card.ApplyDiceStatBonus(DiceMatch.AllDice, new DiceStatBonus { breakRate = -99999, dmgRate = -99999 });
+		}
+		public override void OnSucceedAttack(BattleDiceBehavior behavior)
+		{
+			++cnt;
+			if (cnt == 4) OnUseLine(behavior.card.target);
+		}
+		public void OnUseLine(BattleUnitModel target)
+		{
+			if (target == null) return;
+			if (BattleUnitBuf_HMIdsu.GetBuf(owner) == null) BattleUnitBuf_HMIdsu.Akari(owner, 1);
+			cnt = 0;
+			if (good)
+			{
+				model = target;
+				List<BattleUnitModel> aliveList = BattleObjectManager.instance.GetAliveList_opponent(owner.faction).FindAll((BattleUnitModel x) => x != target);
+				if (aliveList.Count > 0) Singleton<StageController>.Instance.AddAllCardListInBattle(card, RandomUtil.SelectOne(aliveList));
+			}
+			else BattleUnitBuf_HMIdsu.GetBuf(owner).merge(target.index, model.index);
+			good = !good;
 		}
 	}
 }
