@@ -776,7 +776,7 @@ namespace HMI_FragOfficeRemake_MOD
 			gameObject.SetActive(true);
 		}
 		private void Update()
-		{//BrandNewWorld 1123581321
+		{//BrandNewWorld or BrandNewWorld1123 1123581321 or 1123581321fibb
 		}
 		public Sprite img;
 		public Camera camera;
@@ -1519,6 +1519,51 @@ namespace HMI_FragOfficeRemake_MOD
 			BattleUnitBuf_HMIforest1.Akari(card.target, 7 - BattleUnitBuf_HMIforest1.GetStack(card.target));
 		}
 	}
+	public class HMIline1 : MonoBehaviour
+	{
+		public void SetSrc(Transform from)
+		{
+			_src = _from = from;
+		}
+		public void SetDst(Transform to)
+		{
+			_dst = _to = to;
+		}
+		void Start()
+        {
+			_line = gameObject.AddComponent<LineRenderer>();
+		}
+		private void Update()
+		{
+			if (_line != null && _from != null && _to != null)
+			{
+                try
+                {
+					_line.enabled = true;
+					_src.position = _from.position;
+					_dst.position = _to.position;
+					_line.SetPosition(0, _src.position);
+					_line.SetPosition(1, _dst.position);
+					_line.startColor = _line.endColor = Color.cyan;
+                }
+				catch (Exception ex)
+				{
+					File.WriteAllText(Application.dataPath + "/BaseMods/HMIlineerror.txt", ex.Message + Environment.NewLine + ex.StackTrace);
+				}
+				return;
+			}
+			_line.enabled = false;
+		}
+		[SerializeField]
+		private Transform _src;
+		[SerializeField]
+		private Transform _dst;
+		[SerializeField]
+		private LineRenderer _line;
+		private Transform _from;
+		private Transform _to;
+	}
+
 	public class BattleUnitBuf_HMIdsu : BattleUnitBuf
 	{
 		public BattleUnitBuf_HMIdsu(BattleUnitModel model)
@@ -1559,7 +1604,7 @@ namespace HMI_FragOfficeRemake_MOD
 		public int getfa(int x)
 		{
 			if (fa == null) fa = new List<int> { 0, 1, 2, 3, 4, 5 };
-			if (x > 100000) return x;
+			if (x > 10) return x;
 			while (x >= fa.Count) fa.Add(fa.Count);
 			while (x != fa[x]) x = fa[x];
 			return x;
@@ -1567,7 +1612,7 @@ namespace HMI_FragOfficeRemake_MOD
 		public void merge(int x,int y)
 		{
 			if (siz == null) siz = new List<int> { 1, 1, 1, 1, 1, 1 };
-			if (Math.Max(x, y) > 100000) return;
+			if (Math.Max(x, y) > 10) return;
 			while (Math.Max(x, y) >= siz.Count) siz.Add(1);
 			x = getfa(x); y = getfa(y);
 			if (x == y) return;
@@ -1594,15 +1639,46 @@ namespace HMI_FragOfficeRemake_MOD
 					foreach (int v in victims)
 					{
 						BattleUnitModel model = BattleObjectManager.instance.GetAliveList_opponent(_owner.faction)[v];
-						model.TakeDamage(behavior.DiceResultValue);
-						model.TakeBreakDamage(behavior.DiceResultValue);
+						DiceStatBonus bonus = typeof(BattleDiceBehavior).GetField("_statBonus").GetValue(behavior) as DiceStatBonus;
+						model.TakeDamage(Math.Max((behavior.DiceResultValue + bonus.dmg) * bonus.dmgRate, 0));
+						model.TakeBreakDamage(Math.Max((behavior.DiceResultValue + bonus.breakDmg) * bonus.breakRate, 0));
 						s = s + v.ToString() + " ";
 					}
-					s += Environment.NewLine + fa.Count.ToString();
+					s += Environment.NewLine + fa.Count.ToString() + Environment.NewLine;
 					for (int i = 0; i < fa.Count; ++i) s += getfa(i).ToString() + " ";
 					File.WriteAllText(Application.dataPath + "/BaseMods/HMIdebug.txt", s);
 				}
 			}
+		}
+		static List<HMIline1> lines = new List<HMIline1>();
+		[SerializeField]
+		HMIline1 _line;
+		void DestroyLines()
+		{
+			if (lines == null) lines = new List<HMIline1>();
+			foreach (HMIline1 line in lines) UnityEngine.Object.Destroy(line.gameObject);
+			lines.Clear();
+		}
+		public override void OnRoundStart()
+		{
+			if (lines != null) DestroyLines();
+			else lines = new List<HMIline1>();
+			List<BattleUnitModel> models = BattleObjectManager.instance.GetAliveList_opponent(_owner.faction);
+			for (int i = 0; i < fa.Count; ++i)
+			{
+				if (i != fa[i])
+				{
+					HMIline1 line = _line = UnityEngine.Object.Instantiate(_line);
+					//HMIline1 line = UnityEngine.Object.Instantiate<HMIline1>(null);
+					line.SetSrc(models[i].view.atkEffectRoot.transform);
+					line.SetSrc(models[fa[i]].view.atkEffectRoot.transform);
+					lines.Add(line);
+				}
+			}
+		}
+		public override void OnUseCard(BattlePlayingCardDataInUnitModel card)
+		{
+			DestroyLines();
 		}
 	}
 	public class DiceCardSelfAbility_HMIstring : DiceCardSelfAbilityBase
