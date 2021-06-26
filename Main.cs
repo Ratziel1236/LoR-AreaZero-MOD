@@ -381,15 +381,16 @@ namespace HMI_FragOfficeRemake_MOD
 				if (gotLightCardIDs.Contains(cardId))
 				{
 					Color color = new Color(0.75f, 0.75f, 0.75f);
-					Color color2 = new Color();color2 = color * 0.6f;
-					color2.a = 1f;
-					__instance.img_diceFrame.color = color2;
-					__instance.img_diceLinearDodge.color = color;
-					__instance.img_diceLinearDodge.enabled = false;
-					__instance.img_baseLine.color = color;
+					//Color color2 = new Color();color2 = color * 0.6f;
+					//color2.a = 1f;
+					//__instance.img_detail.color = color2;
+					//__instance.img_diceFrame.color = color2;
+					//__instance.img_diceLinearDodge.color = color;
+					//__instance.img_diceLinearDodge.enabled = false;
+					//__instance.img_baseLine.color = color;
 					__instance.txt_ability.color = color;
-					__instance.img_dicefaces[0].color = color;
-					__instance.img_dicefaces[1].color = color;
+					//__instance.img_dicefaces[0].color = color;
+					//__instance.img_dicefaces[1].color = color;
 					__instance.txt_range.color = color;
 				}
 			}
@@ -656,6 +657,8 @@ namespace HMI_FragOfficeRemake_MOD
 			obj3.GetType().GetField("img_iconFrame").SetValue(obj3, component5);
 			TextMeshProUGUI component7 = gameObject2.transform.GetChild(2).gameObject.GetComponent<TextMeshProUGUI>();
 			obj3.GetType().GetField("txt_iconContent").SetValue(obj3, component7);
+			UICustomSelectable component8 = gameObject2.transform.GetChild(3).gameObject.GetComponent<UICustomSelectable>();
+			obj3.GetType().GetField("selectable").SetValue(obj3, component8);
 			object obj4 = Activator.CreateInstance(assembly.GetType("UI.storyIconLevel"));
 			gameObject2 = gameObject3.transform.GetChild(3).GetChild(1).gameObject;
 			obj4.GetType().GetField("root").SetValue(obj4, gameObject2);
@@ -665,6 +668,8 @@ namespace HMI_FragOfficeRemake_MOD
 			obj4.GetType().GetField("img_iconFrame").SetValue(obj4, component5);
 			component7 = gameObject2.transform.GetChild(2).gameObject.GetComponent<TextMeshProUGUI>();
 			obj4.GetType().GetField("txt_iconContent").SetValue(obj4, component7);
+			component8 = gameObject2.transform.GetChild(3).gameObject.GetComponent<UICustomSelectable>();
+			obj4.GetType().GetField("selectable").SetValue(obj3, component8);
 			object obj5 = Activator.CreateInstance(assembly.GetType("UI.storyIconLevel"));
 			gameObject2 = gameObject3.transform.GetChild(3).GetChild(2).gameObject;
 			obj5.GetType().GetField("root").SetValue(obj5, gameObject2);
@@ -674,18 +679,17 @@ namespace HMI_FragOfficeRemake_MOD
 			obj5.GetType().GetField("img_iconFrame").SetValue(obj5, component5);
 			component7 = gameObject2.transform.GetChild(2).gameObject.GetComponent<TextMeshProUGUI>();
 			obj5.GetType().GetField("txt_iconContent").SetValue(obj5, component7);
+			component8 = gameObject2.transform.GetChild(3).gameObject.GetComponent<UICustomSelectable>();
+			obj5.GetType().GetField("selectable").SetValue(obj3, component8);
 			array.SetValue(obj3, 0);
 			array.SetValue(obj4, 1);
 			array.SetValue(obj5, 2);
 			newslot.GetType().GetField("iconset_Level", AccessTools.all).SetValue(newslot, array);
 			List<GameObject> list = new List<GameObject>();
-			List<GameObject> list2 = (List<GameObject>)slot.GetType().GetField("connectLineList", AccessTools.all).GetValue(slot);
-			GameObject gameObject5 = list2[0];
+			GameObject gameObject5 = ((List<GameObject>)slot.GetType().GetField("connectLineList", AccessTools.all).GetValue(slot))[0];
 			GameObject item = UnityEngine.Object.Instantiate(gameObject5, gameObject5.transform.parent);
 			list.Add(item);
 			newslot.GetType().GetField("connectLineList", AccessTools.all).SetValue(newslot, list);
-			//UITooltipDataLoader component8 = newslot.gameObject.GetComponent<UITooltipDataLoader>();
-			//newslot.GetType().GetField("tooltiploader", AccessTools.all).SetValue(newslot, component8);
 			newslot.GetType().GetField("isChapterIcon", AccessTools.all).SetValue(newslot, false);
 			newslot.GetType().GetField("currentGrade", AccessTools.all).SetValue(newslot, Grade.grade1);
 			GameObject gameObject6 = null;
@@ -705,8 +709,7 @@ namespace HMI_FragOfficeRemake_MOD
 				value = gameObject6.GetComponent<TextMeshProUGUI>();
 			}
 			newslot.GetType().GetField("txt_openChapterName", AccessTools.all).SetValue(newslot, value);
-			GameObject gameObject7 = newslot.transform.GetChild(2).GetChild(0).GetChild(0).gameObject;
-			TextMeshProUGUI component9 = gameObject7.GetComponent<TextMeshProUGUI>();
+			TextMeshProUGUI component9 = newslot.transform.GetChild(2).GetChild(0).GetChild(0).gameObject.GetComponent<TextMeshProUGUI>();
 			newslot.GetType().GetField("txt_chaptergrade", AccessTools.all).SetValue(newslot, component9);
 		}
 
@@ -726,6 +729,7 @@ namespace HMI_FragOfficeRemake_MOD
 				}
 				UIStoryProgressIconSlot uistoryProgressIconSlot3 = UnityEngine.Object.Instantiate(uistoryProgressIconSlot, uistoryProgressIconSlot.transform.parent);
 				SlotCopying(__instance, uistoryProgressIconSlot, uistoryProgressIconSlot3);
+				uistoryProgressIconSlot3.Initialized(__instance);
 				uistoryProgressIconSlot3.transform.localPosition += new UnityEngine.Vector3(-400f, 0f);
 				List<GameObject> list2 = (List<GameObject>)uistoryProgressIconSlot3.GetType().GetField("connectLineList", AccessTools.all).GetValue(uistoryProgressIconSlot3);
 				list2[0].transform.localPosition += new UnityEngine.Vector3(-400f, 0f);
@@ -3912,7 +3916,7 @@ namespace HMI_FragOfficeRemake_MOD
 			_bMapInitialized = true;
 			_dlgIdList = new List<string>();
 			_dlgIdList.Add("诗人有意无限地，长久地搅乱自身的所有感官，获得预见世事的能力……");
-            _dlgIdList.Add("裂光芒之肤，横流其血");
+			_dlgIdList.Add("裂光芒之肤，横流其血");
 			_dlgIdList.Add("我们铭记死者，直至将其遗忘");
 			_dlgIdList.Add("一个孤立系统的总混乱度不会减小");
 			_dlgIdList.Add("E=mc^2");

@@ -58,11 +58,13 @@ namespace HMI_FragOfficeRemake_MOD
 	{
 		public override void OnUseInstance(BattleUnitModel unit, BattleDiceCardModel self, BattleUnitModel targetUnit)
 		{
+			int stack = BattleUnitBuf_HMILightUp.GetStack(unit);
 			unit.cardSlotDetail.RecoverPlayPointByCard(1);
-			unit.TakeBreakDamage(2 + BattleUnitBuf_HMILightUp.GetStack(unit) * 3, DamageType.Card_Ability);
+			unit.TakeBreakDamage(2 + stack * 3, DamageType.Card_Ability);
 			BattleUnitBuf_HMILightUp.Akari(unit, 1);
 			unit.allyCardDetail.ExhaustCard(self.GetID());
 			unit.allyCardDetail.AddNewCard(self.GetID(), true).temporary = true;
+
 		}
 	}
 	public class DiceCardSelfAbility_HMIuseMusicStone : DiceCardSelfAbilityBase
@@ -1531,7 +1533,14 @@ namespace HMI_FragOfficeRemake_MOD
 		}
 		void Start()
         {
-			_line = gameObject.AddComponent<LineRenderer>();
+            try
+            {
+				_line = gameObject.AddComponent<LineRenderer>();
+			}
+			catch (Exception ex)
+			{
+				File.WriteAllText(Application.dataPath + "/BaseMods/HMIlinecreateerror.txt", ex.Message + Environment.NewLine + ex.StackTrace);
+			}
 		}
 		private void Update()
 		{
@@ -1639,9 +1648,9 @@ namespace HMI_FragOfficeRemake_MOD
 					foreach (int v in victims)
 					{
 						BattleUnitModel model = BattleObjectManager.instance.GetAliveList_opponent(_owner.faction)[v];
-						DiceStatBonus bonus = typeof(BattleDiceBehavior).GetField("_statBonus").GetValue(behavior) as DiceStatBonus;
-						model.TakeDamage(Math.Max((behavior.DiceResultValue + bonus.dmg) * bonus.dmgRate, 0));
-						model.TakeBreakDamage(Math.Max((behavior.DiceResultValue + bonus.breakDmg) * bonus.breakRate, 0));
+						DiceStatBonus bonus = typeof(BattleDiceBehavior).GetField("_statBonus", AccessTools.all).GetValue(behavior) as DiceStatBonus;
+						model.TakeDamage(Math.Max((behavior.DiceResultValue + bonus.dmg) * bonus.dmgRate / 100, 0));
+						model.TakeBreakDamage(Math.Max((behavior.DiceResultValue + bonus.breakDmg) * bonus.breakRate / 100, 0));
 						s = s + v.ToString() + " ";
 					}
 					s += Environment.NewLine + fa.Count.ToString() + Environment.NewLine;
@@ -1653,11 +1662,17 @@ namespace HMI_FragOfficeRemake_MOD
 		static List<HMIline1> lines = new List<HMIline1>();
 		[SerializeField]
 		HMIline1 _line;
+		//static List<LineRenderer> lines = new List<LineRenderer>();
+		//[SerializeField]
+		//LineRenderer _line;
 		void DestroyLines()
 		{
 			if (lines == null) lines = new List<HMIline1>();
 			foreach (HMIline1 line in lines) UnityEngine.Object.Destroy(line.gameObject);
 			lines.Clear();
+			//if (lines == null) lines = new List<LineRenderer>();
+			//foreach (LineRenderer line in lines) UnityEngine.Object.Destroy(line.gameObject);
+			//lines.Clear();
 		}
 		public override void OnRoundStart()
 		{
@@ -1668,13 +1683,32 @@ namespace HMI_FragOfficeRemake_MOD
 			{
 				if (i != fa[i])
 				{
-					HMIline1 line = _line = UnityEngine.Object.Instantiate(_line);
-					//HMIline1 line = UnityEngine.Object.Instantiate<HMIline1>(null);
-					line.SetSrc(models[i].view.atkEffectRoot.transform);
-					line.SetSrc(models[fa[i]].view.atkEffectRoot.transform);
-					lines.Add(line);
+                    try
+					{
+						HMIline1 line = _line = UnityEngine.Object.Instantiate(_line);
+						//HMIline1 line = UnityEngine.Object.Instantiate<HMIline1>(null);
+						line.SetSrc(models[i].view.atkEffectRoot.transform);
+						line.SetDst(models[fa[i]].view.atkEffectRoot.transform);
+						lines.Add(line);
+                    }
+					catch(Exception ex)
+                    {
+						File.WriteAllText(Application.dataPath + "/BaseMods/HMIlinegeneratingerror.txt", ex.Message + Environment.NewLine + ex.StackTrace);
+					}
 				}
 			}
+			//if (lines != null) DestroyLines();
+			//else lines = new List<LineRenderer>();
+			//List<BattleUnitModel> models = BattleObjectManager.instance.GetAliveList_opponent(_owner.faction);
+			//for (int i = 0; i < fa.Count; ++i)
+			//{
+			//	if (i != fa[i])
+			//	{
+			//		line.SetSrc(models[i].view.atkEffectRoot.transform);
+			//		line.SetSrc(models[fa[i]].view.atkEffectRoot.transform);
+			//		lines.Add(line);
+			//	}
+			//}
 		}
 		public override void OnUseCard(BattlePlayingCardDataInUnitModel card)
 		{
