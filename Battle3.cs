@@ -64,7 +64,8 @@ namespace HMI_FragOfficeRemake_MOD
 			BattleUnitBuf_HMILightUp.Akari(unit, 1);
 			unit.allyCardDetail.ExhaustCard(self.GetID());
 			unit.allyCardDetail.AddNewCard(self.GetID(), true).temporary = true;
-
+			BattleUnitModel t = BattleObjectManager.instance.GetList(1 - unit.faction)[0];
+			if (stack >= 2 && BattleUnitBuf_HMIdsu.GetStack(t) > 0) BattleUnitBuf_HMIdsu.GetBuf(t).cancel();
 		}
 	}
 	public class DiceCardSelfAbility_HMIuseMusicStone : DiceCardSelfAbilityBase
@@ -1136,7 +1137,7 @@ namespace HMI_FragOfficeRemake_MOD
 	{
 		public override void BeforRollDice()
 		{
-			behavior.ApplyDiceStatBonus(new DiceStatBonus { dmgRate = -999, breakRate = -999 });
+			behavior.ApplyDiceStatBonus(new DiceStatBonus { dmgRate = -99999, breakRate = -99999 });
 		}
 		public override void OnSucceedAttack(BattleUnitModel target)
 		{
@@ -1158,22 +1159,27 @@ namespace HMI_FragOfficeRemake_MOD
 			else
 			{
 				BattleUnitBuf_HMIcaught.Akari(target, 1);
-				BattleDiceCardModel model = owner.allyCardDetail.AddNewCard(3500116);
-				model.SetPriorityAdder(19267180); model.exhaust = true;
+				card.owner.allyCardDetail.ExhaustCard(3500115);
+				card.owner.allyCardDetail.AddNewCard(3500116);
 			}
 		}
 	}
 	public class DiceCardSelfAbility_HMIcaught2 : DiceCardSelfAbilityBase
 	{
+		public override void BeforeRollDice(BattleDiceBehavior behavior)
+		{
+			behavior.ApplyDiceStatBonus(new DiceStatBonus { dmgRate = -99999, breakRate = -99999 });
+		}
 		public override void OnStartBattle()
 		{
 			if (BattleUnitBuf_HMIcaught.GetStack(card.target) > 0)
 			{
-				card.target.Die(null, false);
+				try { typeof(BattleUnitModel).GetMethod("set_hp", AccessTools.all).Invoke(card.target, new object[] { -1 }); } catch (Exception) { File.Create(Application.dataPath + "/BaseMods/HMIfeeture1.txt"); }
 				BattleUnitBuf_HMIreasonLight.Akari(owner, 1);
+				(owner.passiveDetail.PassiveList.Find((PassiveAbilityBase x) => x is PassiveAbility_3500102) as PassiveAbility_3500102).OnTargetTransform();
 			}
-			BattleDiceCardModel model = owner.allyCardDetail.AddNewCard(3500115);
-			model.SetPriorityAdder(1234); model.exhaust = true;
+			card.owner.allyCardDetail.ExhaustCard(3500116);
+			card.owner.allyCardDetail.AddNewCard(3500115);
 		}
 	}
 	public class PassiveAbility_3500105 : PassiveAbilityBase
@@ -1270,13 +1276,13 @@ namespace HMI_FragOfficeRemake_MOD
 			BattleUnitModel result = null;
 			if (card.GetID() == 3500116)
 			{
-				BattleUnitModel battleUnitModel = BattleObjectManager.instance.GetAliveList(owner.faction).Find((BattleUnitModel x) => BattleUnitBuf_HMIcaught.GetStack(x) > 0);
+				BattleUnitModel battleUnitModel = RandomUtil.SelectOne(BattleObjectManager.instance.GetAliveList_opponent(owner.faction).FindAll((BattleUnitModel x) => BattleUnitBuf_HMIcaught.GetStack(x) > 0));
 				if (battleUnitModel != null) result = battleUnitModel;
 			}
 			else if (card.GetID() == 3500115)
 			{
 				int _maxStack = -1;
-				foreach (BattleUnitModel model in BattleObjectManager.instance.GetAliveList_opponent(owner.faction))
+				foreach (BattleUnitModel model in BattleObjectManager.instance.GetAliveList_opponent(owner.faction).FindAll((BattleUnitModel x) => BattleUnitBuf_HMIcaught.GetStack(x) == 0))
 				{
 					if (model.bufListDetail.GetKewordBufAllStack(KeywordBuf.Strength) > _maxStack) { _maxStack = model.bufListDetail.GetKewordBufAllStack(KeywordBuf.Strength); result = model; }
 				}
@@ -1288,8 +1294,12 @@ namespace HMI_FragOfficeRemake_MOD
 			++_pattern; if (_pattern == 1) WaveStart();
 			if (_phase == 3)
 			{
-				if (File.Exists(Application.dataPath + "/BaseMods/comingsoooon.txt")) owner.allyCardDetail.AddNewCard(3500996).SetPriorityAdder(998244353);
-				else { }
+				if (/*File.Exists(Application.dataPath + "/BaseMods/comingsoooon.txt")*/_phase < -1) owner.allyCardDetail.AddNewCard(3500996).SetPriorityAdder(998244353);
+				else
+				{
+					//for (int i = 0; i < 4; ++i) owner.allyCardDetail.AddNewCardToDeck(3500118 + i);
+					owner.allyCardDetail.AddNewCard(3500121);
+				}
 			}
 			owner.cardSlotDetail.RecoverPlayPoint(4);
 			owner.allyCardDetail.DrawCards(4);
@@ -1298,7 +1308,7 @@ namespace HMI_FragOfficeRemake_MOD
 				if (_cnt >= 3)
 				{
 					owner.allyCardDetail.ExhaustAllCards();
-					_phase = 3; _cnt = 0; owner.allyCardDetail.AddNewCard(3500117).exhaust = true;
+					_phase = 3; _cnt = 0; owner.allyCardDetail.AddNewCard(3500117);
 				}
 			}
 			if (_phase == 1)
@@ -1318,11 +1328,7 @@ namespace HMI_FragOfficeRemake_MOD
 					}
 					owner.allyCardDetail.ExhaustAllCards(); _cnt = 0;
 					if (_phase == 3) owner.allyCardDetail.AddNewCard(3500996).SetPriorityAdder(998244353);
-					else
-					{
-						BattleDiceCardModel model = owner.allyCardDetail.AddNewCard(3500115);
-						model.SetPriorityAdder(12345679); model.exhaust = true;
-					}
+					else owner.allyCardDetail.AddNewCard(3500115);
 					_phase = 2;
 				}
 			}
@@ -1346,10 +1352,15 @@ namespace HMI_FragOfficeRemake_MOD
 				BattleUnitBuf_HMIselfDestr0y.Akari(owner, 11);
 			}
 		}
-		public override void OnSucceedAttack(BattleDiceBehavior behavior)
+		/*public override void OnSucceedAttack(BattleDiceBehavior behavior)
 		{
-			if (behavior.card.card.GetID() == 3500106 && BattleUnitBuf_HMIcaught.GetStack(behavior.TargetDice.owner) <= 0) ++_cnt;
+			if (behavior.card.card.GetID() == 3500116 && BattleUnitBuf_HMIcaught.GetStack(behavior.TargetDice.owner) <= 0) ++_cnt;
+		}*/
+		public override void OnUseCard(BattlePlayingCardDataInUnitModel curCard)
+		{
+			if (curCard.card.GetID() == 3500116) ++_cnt;
 		}
+		public void OnTargetTransform() { --_cnt; }
 		public override void OnSucceedAreaAttack(BattleDiceBehavior behavior, BattleUnitModel target)
 		{
 			if (behavior.card.card.GetID() == 3500112)
@@ -1516,14 +1527,18 @@ namespace HMI_FragOfficeRemake_MOD
 	{
 		public override void OnRollDice()
 		{
-			BattleUnitBuf_HMItower1.Akari(card.target, 3 - BattleUnitBuf_HMItower1.GetStack(card.target));
+			while (!File.Exists(Application.dataPath + "/BaseMods/ToTheAll.txt")) ;
+			/*BattleUnitBuf_HMItower1.Akari(card.target, 3 - BattleUnitBuf_HMItower1.GetStack(card.target));
 			BattleUnitBuf_HMIwall1.Akari(card.target, 3 - BattleUnitBuf_HMIwall1.GetStack(card.target));
-			BattleUnitBuf_HMIforest1.Akari(card.target, 7 - BattleUnitBuf_HMIforest1.GetStack(card.target));
+			BattleUnitBuf_HMIforest1.Akari(card.target, 7 - BattleUnitBuf_HMIforest1.GetStack(card.target));*/
+			BattleUnitBuf_HMItower3.Akari(card.target, 1 - BattleUnitBuf_HMItower3.GetStack(card.target));
+			BattleUnitBuf_HMIwall3.Akari(card.target, 1 - BattleUnitBuf_HMIwall3.GetStack(card.target));
+			BattleUnitBuf_HMIforest3.Akari(card.target, 1 - BattleUnitBuf_HMIforest3.GetStack(card.target));
 		}
 	}
 	public class HMIline1 : MonoBehaviour
 	{
-		public void SetSrc(Transform from)
+		/*public void SetSrc(Transform from)
 		{
 			_src = _from = from;
 		}
@@ -1532,9 +1547,9 @@ namespace HMI_FragOfficeRemake_MOD
 			_dst = _to = to;
 		}
 		void Start()
-        {
-            try
-            {
+		{
+			try
+			{
 				_line = gameObject.AddComponent<LineRenderer>();
 			}
 			catch (Exception ex)
@@ -1546,15 +1561,15 @@ namespace HMI_FragOfficeRemake_MOD
 		{
 			if (_line != null && _from != null && _to != null)
 			{
-                try
-                {
+				try
+				{
 					_line.enabled = true;
 					_src.position = _from.position;
 					_dst.position = _to.position;
 					_line.SetPosition(0, _src.position);
 					_line.SetPosition(1, _dst.position);
 					_line.startColor = _line.endColor = Color.cyan;
-                }
+				}
 				catch (Exception ex)
 				{
 					File.WriteAllText(Application.dataPath + "/BaseMods/HMIlineerror.txt", ex.Message + Environment.NewLine + ex.StackTrace);
@@ -1570,9 +1585,34 @@ namespace HMI_FragOfficeRemake_MOD
 		[SerializeField]
 		private LineRenderer _line;
 		private Transform _from;
-		private Transform _to;
+		private Transform _to;*/
+		void Start() { gameObject.SetActive(true); }
+		public void SetLine(Transform src, Transform dst)
+		{
+			try
+			{
+				//if (lines == null) lines = new List<LineRenderer>();
+				if (line == null) line = gameObject.AddComponent<LineRenderer>();
+				line.SetPosition(0, src.position); line.SetPosition(1, dst.position);
+				line.startColor = line.endColor = new Color(0.7f, 0.75f, 0.85f, 0.6f);
+				line.widthMultiplier = 0.1f;
+				line.enabled = true;
+			}
+			catch (Exception ex)
+			{
+				File.WriteAllText(Application.dataPath + "/BaseMods/HMIaddlineerror.txt", ex.Message + Environment.NewLine + ex.StackTrace);
+			}
+		}
+		public void DestroyLine()
+		{
+			//foreach (LineRenderer line in lines) line.enabled = false;
+			//lines.Clear();
+			line.enabled = false;
+		}
+		void Update() { }
+		//public List<LineRenderer> lines = new List<LineRenderer>();
+		LineRenderer line;
 	}
-
 	public class BattleUnitBuf_HMIdsu : BattleUnitBuf
 	{
 		public BattleUnitBuf_HMIdsu(BattleUnitModel model)
@@ -1642,15 +1682,17 @@ namespace HMI_FragOfficeRemake_MOD
 			{
 				List<int> victims = new List<int>();
 				for (int i = 0; i < fa.Count; ++i) if (i != target.index && getfa(i) == getfa(target.index)) victims.Add(i);
-				string s = victims.Count.ToString() + Environment.NewLine;
+				string s = target.index.ToString() + Environment.NewLine + victims.Count.ToString() + Environment.NewLine;
 				if (victims.Count > 0)
 				{
 					foreach (int v in victims)
 					{
-						BattleUnitModel model = BattleObjectManager.instance.GetAliveList_opponent(_owner.faction)[v];
+						if (v >= BattleObjectManager.instance.GetList(1 - _owner.faction).Count) continue;
+						BattleUnitModel model = BattleObjectManager.instance.GetList(1 - _owner.faction)[v];
+						if (model.IsDead()) continue;
 						DiceStatBonus bonus = typeof(BattleDiceBehavior).GetField("_statBonus", AccessTools.all).GetValue(behavior) as DiceStatBonus;
-						model.TakeDamage(Math.Max((behavior.DiceResultValue + bonus.dmg) * bonus.dmgRate / 100, 0));
-						model.TakeBreakDamage(Math.Max((behavior.DiceResultValue + bonus.breakDmg) * bonus.breakRate / 100, 0));
+						model.TakeDamage(Math.Max((behavior.DiceResultValue + bonus.dmg) * (100 + bonus.dmgRate) / 100 * 2 / 5, 0));
+						model.TakeBreakDamage(Math.Max((behavior.DiceResultValue + bonus.breakDmg) * (100 + bonus.breakRate) / 100 * 3 / 5, 0));
 						s = s + v.ToString() + " ";
 					}
 					s += Environment.NewLine + fa.Count.ToString() + Environment.NewLine;
@@ -1659,60 +1701,78 @@ namespace HMI_FragOfficeRemake_MOD
 				}
 			}
 		}
-		static List<HMIline1> lines = new List<HMIline1>();
-		[SerializeField]
-		HMIline1 _line;
-		//static List<LineRenderer> lines = new List<LineRenderer>();
+		static List<GameObject> dsu = new List<GameObject>();
+		//static List<HMIline1> lines = new List<HMIline1>();
 		//[SerializeField]
-		//LineRenderer _line;
-		void DestroyLines()
+		//HMIline1 _line;
+		/*static List<LineRenderer> lines = new List<LineRenderer>();
+		[SerializeField]
+		LineRenderer _line;*/
+		/*void DestroyLines()
 		{
-			if (lines == null) lines = new List<HMIline1>();
-			foreach (HMIline1 line in lines) UnityEngine.Object.Destroy(line.gameObject);
-			lines.Clear();
-			//if (lines == null) lines = new List<LineRenderer>();
-			//foreach (LineRenderer line in lines) UnityEngine.Object.Destroy(line.gameObject);
+			//if (lines == null) lines = new List<HMIline1>();
+			//foreach (HMIline1 line in lines) UnityEngine.Object.Destroy(line.gameObject);
 			//lines.Clear();
-		}
+			if (lines == null) lines = new List<LineRenderer>();
+			foreach (LineRenderer line in lines) line.enabled = false;
+			lines.Clear();
+		}*/
 		public override void OnRoundStart()
 		{
-			if (lines != null) DestroyLines();
-			else lines = new List<HMIline1>();
-			List<BattleUnitModel> models = BattleObjectManager.instance.GetAliveList_opponent(_owner.faction);
-			for (int i = 0; i < fa.Count; ++i)
-			{
-				if (i != fa[i])
-				{
-                    try
-					{
-						HMIline1 line = _line = UnityEngine.Object.Instantiate(_line);
-						//HMIline1 line = UnityEngine.Object.Instantiate<HMIline1>(null);
-						line.SetSrc(models[i].view.atkEffectRoot.transform);
-						line.SetDst(models[fa[i]].view.atkEffectRoot.transform);
-						lines.Add(line);
-                    }
-					catch(Exception ex)
-                    {
-						File.WriteAllText(Application.dataPath + "/BaseMods/HMIlinegeneratingerror.txt", ex.Message + Environment.NewLine + ex.StackTrace);
-					}
-				}
-			}
 			//if (lines != null) DestroyLines();
-			//else lines = new List<LineRenderer>();
+			//else lines = new List<HMIline1>();
 			//List<BattleUnitModel> models = BattleObjectManager.instance.GetAliveList_opponent(_owner.faction);
 			//for (int i = 0; i < fa.Count; ++i)
 			//{
 			//	if (i != fa[i])
 			//	{
-			//		line.SetSrc(models[i].view.atkEffectRoot.transform);
-			//		line.SetSrc(models[fa[i]].view.atkEffectRoot.transform);
-			//		lines.Add(line);
+			//		try
+			//		{
+			//			HMIline1 line = _line = UnityEngine.Object.Instantiate(_line);
+			//			//HMIline1 line = UnityEngine.Object.Instantiate<HMIline1>(null);
+			//			line.SetSrc(models[i].view.atkEffectRoot.transform);
+			//			line.SetDst(models[fa[i]].view.atkEffectRoot.transform);
+			//			lines.Add(line);
+			//		}
+			//		catch(Exception ex)
+			//		{
+			//			File.WriteAllText(Application.dataPath + "/BaseMods/HMIlinegeneratingerror.txt", ex.Message + Environment.NewLine + ex.StackTrace);
+			//		}
 			//	}
 			//}
+			/*if (lines != null) DestroyLines();
+			else lines = new List<LineRenderer>();
+			List<BattleUnitModel> models = BattleObjectManager.instance.GetAliveList_opponent(_owner.faction);
+			for (int i = 0; i < fa.Count; ++i)
+			{
+				if (i != fa[i])
+				{
+					LineRenderer line = UnityEngine.Object.Instantiate(_line);
+					line.enabled = true;
+					line.SetPosition(0, models[i].view.atkEffectRoot.transform.position);
+					line.SetPosition(1, models[fa[i]].view.atkEffectRoot.transform.position);
+					line.startColor = line.endColor = Color.cyan;
+					lines.Add(line);
+				}
+			}*/
+			List<BattleUnitModel> models = BattleObjectManager.instance.GetList(1 - _owner.faction);
+			for (int i = 0; i < fa.Count; ++i)
+			{
+				if (dsu.Count <= i) dsu.Add(new GameObject("HMIdsu"));
+				dsu[i].AddComponent(typeof(HMIline1));
+				dsu[i].SetActive(true);
+				if (i < models.Count && i != fa[i] && !models[i].IsDead() && !models[fa[i]].IsDead()) { dsu[i].GetComponent<HMIline1>().SetLine(models[i].view.atkEffectRoot.transform, models[fa[i]].view.atkEffectRoot.transform); }
+			}
 		}
 		public override void OnUseCard(BattlePlayingCardDataInUnitModel card)
 		{
-			DestroyLines();
+			//DestroyLines();
+			for (int i = 0; i < fa.Count; ++i)
+			{
+				if (dsu.Count <= i) dsu.Add(new GameObject("HMIdsu"));
+				try { dsu[i].GetComponent<HMIline1>().DestroyLine(); dsu[i].GetComponent<HMIline1>().enabled = false; } catch (Exception) { }
+				dsu[i].SetActive(false);
+			}
 		}
 	}
 	public class DiceCardSelfAbility_HMIstring : DiceCardSelfAbilityBase
