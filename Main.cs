@@ -3717,6 +3717,7 @@ namespace HMI_FragOfficeRemake_MOD
 				Thread.Sleep(100);
 				SystemUtil.keybd_event(32, 0, 2, 0);
 			}
+			else if (_pattern == 2) owner.allyCardDetail.AddNewCardToDeck(3501009);
 			base.OnRoundStart();
 		}
 
