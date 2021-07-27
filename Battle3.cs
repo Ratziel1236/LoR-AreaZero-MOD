@@ -11,6 +11,12 @@ using UI;
 
 namespace HMI_FragOfficeRemake_MOD
 {
+	public partial class Harmony_Patch
+	{
+		public void Battle3_Patch()
+		{
+		}
+	}
 	public class BattleUnitBuf_HMILightUp : BattleUnitBuf
 	{
 		public BattleUnitBuf_HMILightUp(BattleUnitModel model)
@@ -1207,7 +1213,7 @@ namespace HMI_FragOfficeRemake_MOD
 			if (_inLight)
 			{
 				if (_phase == 1) behavior.ApplyDiceStatBonus(new DiceStatBonus { min = behavior.GetDiceVanillaMin() >> 1, max = behavior.GetDiceVanillaMax() >> 1 });
-				if (_phase == 3) BattleUnitBuf_HMIselfDestr0y.Akari(owner, 33);
+				if (_phase == 3 || _phase == 1 && BattleUnitBuf_HMIselfDestr0y.GetStack(owner) < 1600) BattleUnitBuf_HMIselfDestr0y.Akari(owner, 33);
 			}
 		}
 		public override void OnUseCard(BattlePlayingCardDataInUnitModel curCard)
@@ -1624,12 +1630,16 @@ namespace HMI_FragOfficeRemake_MOD
 		{
 			behavior.ApplyDiceStatBonus(new DiceStatBonus { dmgRate = -99999 });
 		}
+		static void Destr0yAll()
+		{
+			for (int i = 0; i < 16; ++i) GameObject.Destroy(GameObject.Find("HMIendbehaviour" + i.ToString()));
+		}
 		public override void OnRollDice()
 		{
 			GameObject obj = new GameObject("HMIendbehaviour" + _cnt.ToString());
 			obj.AddComponent(typeof(HMIendbehaviour));
 			obj.SetActive(true);
-			++_cnt; if (_cnt < 16) card.AddDice(behavior); else { owner.Die(); Singleton<DropBookInventoryModel>.Instance.AddBook(3500004, 1); }
+			++_cnt; if (_cnt < 16) card.AddDice(behavior); else { owner.Die(); Singleton<DropBookInventoryModel>.Instance.AddBook(3500004, 1); Destr0yAll(); }
 		}
 		int _cnt = 0;
 	}

@@ -20,7 +20,7 @@ using System.Linq;
 
 namespace HMI_FragOfficeRemake_MOD
 {
-	public class Harmony_Patch
+	public partial class Harmony_Patch
 	{
 		public Harmony_Patch()
 		{
@@ -132,6 +132,16 @@ namespace HMI_FragOfficeRemake_MOD
 			{
 				File.WriteAllText(Application.dataPath + "/BaseMods/HMIBGerror.txt", ex.Message + Environment.NewLine + ex.StackTrace);
 			}
+			try
+			{
+				Harmony harmony = new Harmony("HMI_FragOffice_MOD_BookDesc");
+				harmony.Patch(typeof(BookDescXmlList).GetMethod("GetBookText", AccessTools.all), null, new HarmonyMethod(typeof(Harmony_Patch).GetMethod("GetBookText_post")), null, null);
+			}
+			catch (Exception ex)
+			{
+				File.WriteAllText(Application.dataPath + "/BaseMods/HMIBookDescerror.txt", ex.Message + Environment.NewLine + ex.StackTrace);
+			}
+			Battle3_Patch();
 		}
 
 		public static void LibraryModel_OnClearStage_Post(LibraryModel __instance, int stageId)
@@ -463,7 +473,7 @@ namespace HMI_FragOfficeRemake_MOD
 			byte[] data = File.ReadAllBytes(path);
 			Texture2D texture2D = new Texture2D(2, 2);
 			texture2D.LoadImage(data);
-			EffectSprites.Add(name, Sprite.Create(texture2D, new Rect(0f, 0f, (float)texture2D.width, (float)texture2D.height), new UnityEngine.Vector2(0.5f, 0.5f), 100f, 0U, SpriteMeshType.FullRect));
+			EffectSprites.Add(name, Sprite.Create(texture2D, new Rect(0f, 0f, texture2D.width, texture2D.height), new UnityEngine.Vector2(0.5f, 0.5f), 100f, 0U, SpriteMeshType.FullRect));
 		}
 
 		public static void textureInit(DirectoryInfo dir)
@@ -781,11 +791,24 @@ namespace HMI_FragOfficeRemake_MOD
 				File.WriteAllText(Application.dataPath + "/BaseMods/HMIUSPPOUPerror.txt", ex.Message + Environment.NewLine + ex.StackTrace);
 			}
 		}
+		public static void GetBookText_post(int bookID, ref List<string> __result)
+		{
+			if (bookID == 3500001) __result = RandomUtil.SelectOne(Fixer3BookDescs);
+		}
+		private static readonly List<List<string>> Fixer3BookDescs = new List<List<string>>
+		{
+			new List<string>("testParam1\n当你看到这个，说明HMI咕了\n但没完全咕".Split('\n')),
+			new List<string>("testParam2\n当你看到这个，说明HMI咕了\n但没完全咕".Split('\n')),
+			new List<string>("testParam3\n当你看到这个，说明HMI咕了\n但没完全咕".Split('\n')),
+			new List<string>("testParam4\n当你看到这个，说明HMI咕了\n但没完全咕".Split('\n')),
+			new List<string>("testParam5\n当你看到这个，说明HMI咕了\n但没完全咕".Split('\n')),
+			new List<string>("testParam666\n当你看到这个，说明HMI咕了\n但没完全咕".Split('\n'))
+		};
 		public static AudioClip HMI3_11BGM;
 
 		public static AudioClip HMI3_21BGM;
 
-		internal static List<string> lis = new List<string>
+		internal static readonly List<string> lis = new List<string>
 		{
 			"damage11and7pw",
 			"entropy9atkeach",
